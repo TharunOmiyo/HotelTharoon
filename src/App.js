@@ -6,18 +6,19 @@ import SingIn from "./Pages/SingIn";
 import SingUp from "./Pages/SingUp";
 import ForgetPassword from "./Pages/ForgetPassword";
 import Offers from "./Pages/Offers";
+import Header from "./Components/Header";
 
 function App() {
   return (
     <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello World</h1>
       <Router>
+        <Header />
         <Routes>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/sign-in" element={<SingIn />} />
           <Route path="/sign-up" element={<SingUp />} />
-          <Route path="/forgetpassword" element={<ForgetPassword />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/offers" element={<Offers />} />
         </Routes>
       </Router>
