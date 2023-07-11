@@ -10,7 +10,9 @@ export default function SingIn() {
     console.log(e.target.value);
     setEmail(e.target.value);
   }
-
+  function onSubmit(e) {
+    e.preventDefault();
+  }
   return (
     <div>
       <h1 className="text-3xl mt-6 font-bold text-center">Forget Password</h1>
@@ -23,7 +25,7 @@ export default function SingIn() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20 items-center">
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="email"

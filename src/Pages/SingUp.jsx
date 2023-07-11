@@ -3,6 +3,16 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../Components/OAuth";
 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { db } from "../firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 export default function SingUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -12,6 +22,7 @@ export default function SingUp() {
   });
 
   const { name, email, password } = formData;
+  const navigate = useNavigate();
   function onChange(e) {
     console.log(e.target.value);
     setFormData({
@@ -19,10 +30,35 @@ export default function SingUp() {
       [e.target.id]: e.target.value,
     });
   }
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
 
+      const user = userCredential.user;
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timeStamp = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      console.log(user);
+      toast.success("Sign up is Successfull");
+      navigate("/");
+    } catch (error) {
+      // console.log(error);
+      toast.error("Something Wrong with registration");
+    }
+  }
   return (
     <div>
-      <h1 className="text-3xl mt-6 font-bold text-center">SIgn-Up</h1>
+      <h1 className="text-3xl mt-6 font-bold text-center">Sign-Up</h1>
       <div className="flex max-w-6xl mx-auto justify-center px-6 py-12 flex-wrap items-center">
         <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
           <img
@@ -32,7 +68,7 @@ export default function SingUp() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20 items-center">
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="name"
